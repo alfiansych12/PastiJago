@@ -1,0 +1,102 @@
+{
+  "1": {
+    "title": "Pengenalan CSS dan Selector Dasar",
+    "theory": "# Apa itu CSS?\n\nCSS (Cascading Style Sheets) digunakan untuk styling dan layout halaman web.\n\n## Cara Menambahkan CSS\n\n### 1. Inline CSS\n```html\n<p style=\"color: blue; font-size: 16px;\">Teks biru</p>\n```\n\n### 2. Internal CSS\n```html\n<style>\n    p {\n        color: red;\n        font-size: 18px;\n    }\n</style>\n```\n\n### 3. External CSS\n```html\n<link rel=\"stylesheet\" href=\"style.css\">\n```\n\n## Selector Dasar\n\n```css\n/* Selector elemen */\np {\n    color: blue;\n}\n\n/* Selector class */\n.text-red {\n    color: red;\n}\n\n/* Selector ID */\n#header {\n    background: gray;\n}\n```\n\n## Contoh Lengkap:\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n        }\n        \n        .judul {\n            color: darkblue;\n            text-align: center;\n        }\n        \n        #container {\n            width: 80%;\n            margin: 0 auto;\n        }\n    </style>\n</head>\n<body>\n    <div id=\"container\">\n        <h1 class=\"judul\">Belajar CSS</h1>\n        <p style=\"color: green;\">Teks hijau dengan inline CSS</p>\n    </div>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Gunakan internal CSS untuk membuat semua paragraph berwarna merah dan heading berwarna biru",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "h1": "Judul Biru",
+            "p": "Paragraf Merah"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<head>\n    <!-- Tulis CSS internal di sini -->\n</head>\n<body>\n    <h1>Judul Biru</h1>\n    <p>Paragraf Merah</p>\n</body>\n</html>"
+    }
+  },
+  "2": {
+    "title": "Colors dan Backgrounds",
+    "theory": "# Warna dan Background\n\n## Sistem Warna CSS\n\n### 1. Named Colors\n```css\np {\n    color: red;\n    background-color: yellow;\n}\n```\n\n### 2. HEX Colors\n```css\nh1 {\n    color: #ff0000;        /* Merah */\n    background: #00ff00;   /* Hijau */\n}\n```\n\n### 3. RGB Colors\n```css\ndiv {\n    color: rgb(255, 0, 0);     /* Merah */\n    background: rgb(0, 255, 0); /* Hijau */\n}\n```\n\n### 4. RGBA Colors (dengan opacity)\n```css\n.box {\n    background: rgba(0, 0, 255, 0.5); /* Biru 50% transparan */\n}\n```\n\n## Background Properties\n\n```css\n.element {\n    background-color: #f0f0f0;\n    background-image: url('gambar.jpg');\n    background-repeat: no-repeat;\n    background-position: center;\n    background-size: cover;\n}\n```\n\n## Contoh Lengkap:\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        body {\n            background-color: #f4f4f4;\n            margin: 0;\n            padding: 20px;\n        }\n        \n        .header {\n            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n            color: white;\n            padding: 20px;\n            text-align: center;\n        }\n        \n        .card {\n            background-color: white;\n            border: 2px solid #ddd;\n            padding: 15px;\n            margin: 10px 0;\n        }\n        \n        .highlight {\n            background-color: #ffff00;\n            color: #333;\n            padding: 5px;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"header\">\n        <h1>Website Saya</h1>\n    </div>\n    \n    <div class=\"card\">\n        <p>Ini adalah <span class=\"highlight\">teks penting</span> yang perlu diperhatikan.</p>\n    </div>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Buat div dengan background warna biru dan teks berwarna putih, serta span dengan background kuning",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "div": "Teks Putih di Biru",
+            "span": "Highlight Kuning"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        /* Tulis CSS di sini */\n    </style>\n</head>\n<body>\n    <div class=\"blue-bg\">Teks Putih di Biru</div>\n    <span class=\"yellow-bg\">Highlight Kuning</span>\n</body>\n</html>"
+    }
+  },
+  "3": {
+    "title": "Text Styling dan Fonts",
+    "theory": "# Styling Teks dan Font\n\n## Text Properties\n\n```css\np {\n    color: #333;                    /* Warna teks */\n    text-align: center;             /* Rata: left, center, right, justify */\n    text-decoration: underline;     /* Dekorasi: underline, overline, line-through */\n    text-transform: uppercase;      /* Transformasi: uppercase, lowercase, capitalize */\n    line-height: 1.6;               /* Tinggi baris */\n    letter-spacing: 1px;            /* Jarak antar huruf */\n    word-spacing: 2px;              /* Jarak antar kata */\n}\n```\n\n## Font Properties\n\n```css\nh1 {\n    font-family: Arial, sans-serif;  /* Jenis font */\n    font-size: 24px;                 /* Ukuran font */\n    font-weight: bold;               /* Ketebalan: normal, bold, 100-900 */\n    font-style: italic;              /* Gaya: normal, italic, oblique */\n}\n```\n\n## Google Fonts\n\n```html\n<!-- Tambahkan di head -->\n<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap\" rel=\"stylesheet\">\n\n<!-- Gunakan di CSS -->\n<style>\n    body {\n        font-family: 'Roboto', sans-serif;\n    }\n    \n    .bold-text {\n        font-weight: 700;\n    }\n</style>\n```\n\n## Contoh Lengkap:\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <link href=\"https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap\" rel=\"stylesheet\">\n    <style>\n        body {\n            font-family: 'Open Sans', sans-serif;\n            line-height: 1.6;\n            color: #333;\n        }\n        \n        .judul {\n            text-align: center;\n            text-transform: uppercase;\n            letter-spacing: 2px;\n            color: #2c3e50;\n        }\n        \n        .quote {\n            font-style: italic;\n            text-align: center;\n            background: #f8f9fa;\n            padding: 20px;\n            border-left: 4px solid #3498db;\n        }\n        \n        .important {\n            font-weight: bold;\n            text-decoration: underline;\n            color: #e74c3c;\n        }\n    </style>\n</head>\n<body>\n    <h1 class=\"judul\">Belajar CSS Typography</h1>\n    \n    <p class=\"quote\">\n        \"Design is not just what it looks like and feels like. Design is how it works.\"\n    </p>\n    \n    <p>\n        Ini adalah teks biasa dengan <span class=\"important\">bagian penting</span> \n        yang ditandai dengan tebal dan garis bawah.\n    </p>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Buat heading dengan font-size 32px, text-align center, dan paragraph dengan line-height 1.8",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "h1": "Judul Besar",
+            "p": "Teks dengan line-height tinggi"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        /* Tulis CSS untuk heading dan paragraph */\n    </style>\n</head>\n<body>\n    <h1>Judul Besar</h1>\n    <p>Teks dengan line-height tinggi</p>\n</body>\n</html>"
+    }
+  },
+  "4": {
+    "title": "Box Model dan Spacing",
+    "theory": "# CSS Box Model\n\nSetiap elemen HTML adalah sebuah 'box' dengan properti:\n\n## Komponen Box Model\n\n```css\n.box {\n    width: 300px;           /* Lebar konten */\n    height: 200px;          /* Tinggi konten */\n    padding: 20px;          /* Jarak dalam */\n    border: 2px solid #333; /* Border */\n    margin: 10px;           /* Jarak luar */\n}\n```\n\n## Margin dan Padding\n\n```css\n/* Semua sisi sama */\n.element1 {\n    margin: 10px;\n    padding: 15px;\n}\n\n/* Vertikal & Horizontal */\n.element2 {\n    margin: 10px 20px;      /* top/bottom: 10px, left/right: 20px */\n    padding: 5px 10px;\n}\n\n/* Individual sides */\n.element3 {\n    margin-top: 5px;\n    margin-right: 10px;\n    margin-bottom: 15px;\n    margin-left: 20px;\n    \n    /* Shorthand */\n    padding: 5px 10px 15px 20px; /* top, right, bottom, left */\n}\n```\n\n## Border Properties\n\n```css\n.border-example {\n    border-width: 2px;\n    border-style: solid;    /* solid, dotted, dashed, double */\n    border-color: red;\n    \n    /* Shorthand */\n    border: 2px solid red;\n    \n    /* Individual sides */\n    border-top: 1px dotted blue;\n    border-radius: 10px;    /* Sudut melengkung */\n}\n```\n\n## Contoh Lengkap:\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        .container {\n            width: 80%;\n            margin: 0 auto;\n            background: #f0f0f0;\n            padding: 20px;\n        }\n        \n        .card {\n            background: white;\n            border: 2px solid #ddd;\n            border-radius: 8px;\n            padding: 20px;\n            margin: 15px 0;\n            box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n        }\n        \n        .highlight-box {\n            background: #fff3cd;\n            border: 1px solid #ffeaa7;\n            border-left: 4px solid #fdcb6e;\n            padding: 15px;\n            margin: 10px 0;\n        }\n        \n        .button {\n            background: #3498db;\n            color: white;\n            padding: 10px 20px;\n            border: none;\n            border-radius: 4px;\n            margin: 5px;\n            cursor: pointer;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"card\">\n            <h2>Card Title</h2>\n            <p>Ini adalah konten card dengan padding dan margin.</p>\n            <button class=\"button\">Click Me</button>\n        </div>\n        \n        <div class=\"highlight-box\">\n            Ini adalah box highlight dengan border kiri yang menonjol.\n        </div>\n    </div>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Buat div dengan width 300px, padding 20px, border 2px solid black, dan margin 10px",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "div": "Kotak dengan Box Model"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        /* Tulis CSS untuk box model */\n    </style>\n</head>\n<body>\n    <div class=\"box\">Kotak dengan Box Model</div>\n</body>\n</html>"
+    }
+  },
+  "5": {
+    "title": "Layout dengan Display Property",
+    "theory": "# Display Property untuk Layout\n\n## Display Values\n\n### 1. Block\nElemen mengambil seluruh lebar parent.\n```css\n.block-element {\n    display: block;      /* Default: div, p, h1-h6 */\n    width: 100%;\n}\n```\n\n### 2. Inline\nElemen hanya mengambil space yang dibutuhkan.\n```css\n.inline-element {\n    display: inline;     /* Default: span, a, strong */\n    /* width dan height tidak bekerja */\n}\n```\n\n### 3. Inline-block\nGabungan inline dan block.\n```css\n.inline-block-element {\n    display: inline-block;\n    width: 100px;\n    height: 50px;\n}\n```\n\n### 4. None\nMenyembunyikan elemen.\n```css\n.hidden {\n    display: none;\n}\n```\n\n## Contoh Layout:\n\n```css\n/* Navigation bar */\n.nav {\n    background: #333;\n    padding: 10px;\n}\n\n.nav-item {\n    display: inline-block;\n    color: white;\n    padding: 10px 20px;\n    text-decoration: none;\n}\n\n.nav-item:hover {\n    background: #555;\n}\n\n/* Card grid */\n.card-container {\n    text-align: center;\n}\n\n.card {\n    display: inline-block;\n    width: 200px;\n    margin: 10px;\n    padding: 15px;\n    background: white;\n    border: 1px solid #ddd;\n    border-radius: 5px;\n}\n```\n\n## Contoh Lengkap:\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        * {\n            margin: 0;\n            padding: 0;\n            box-sizing: border-box;\n        }\n        \n        .navbar {\n            background: #2c3e50;\n            padding: 15px 0;\n        }\n        \n        .nav-container {\n            width: 80%;\n            margin: 0 auto;\n        }\n        \n        .nav-item {\n            display: inline-block;\n            color: white;\n            text-decoration: none;\n            padding: 10px 20px;\n            margin: 0 5px;\n            border-radius: 4px;\n        }\n        \n        .nav-item:hover {\n            background: #34495e;\n        }\n        \n        .product-grid {\n            text-align: center;\n            padding: 20px;\n        }\n        \n        .product {\n            display: inline-block;\n            width: 200px;\n            background: white;\n            border: 1px solid #ddd;\n            border-radius: 8px;\n            padding: 15px;\n            margin: 10px;\n            vertical-align: top;\n        }\n        \n        .hidden {\n            display: none;\n        }\n        \n        .badge {\n            display: inline;\n            background: #e74c3c;\n            color: white;\n            padding: 2px 8px;\n            border-radius: 12px;\n            font-size: 12px;\n        }\n    </style>\n</head>\n<body>\n    <nav class=\"navbar\">\n        <div class=\"nav-container\">\n            <a href=\"#\" class=\"nav-item\">Home</a>\n            <a href=\"#\" class=\"nav-item\">Products</a>\n            <a href=\"#\" class=\"nav-item\">About</a>\n            <a href=\"#\" class=\"nav-item\">Contact</a>\n        </div>\n    </nav>\n    \n    <div class=\"product-grid\">\n        <div class=\"product\">\n            <h3>Product 1 <span class=\"badge\">New</span></h3>\n            <p>Description here</p>\n        </div>\n        <div class=\"product\">\n            <h3>Product 2</h3>\n            <p>Description here</p>\n        </div>\n        <div class=\"product hidden\">\n            <h3>Hidden Product</h3>\n            <p>This is hidden</p>\n        </div>\n    </div>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Buat navigation bar dengan 3 link inline-block dan grid dengan 2 product cards inline-block",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "nav": "Navigation Bar",
+            "div": ["Product 1", "Product 2"]
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        /* Tulis CSS untuk navigation dan product grid */\n    </style>\n</head>\n<body>\n    <!-- Buat navigation bar -->\n    \n    <!-- Buat product grid -->\n</body>\n</html>"
+    }
+  },
+  "6": {
+    "title": "Positioning dan Z-index",
+    "theory": "# CSS Positioning\n\n## Position Values\n\n### 1. Static (Default)\n```css\n.element {\n    position: static;\n}\n```\n\n### 2. Relative\n```css\n.element {\n    position: relative;\n    top: 10px;\n    left: 20px;\n}\n```\n\n### 3. Absolute\n```css\n.element {\n    position: absolute;\n    top: 0;\n    right: 0;\n}\n```\n\n### 4. Fixed\n```css\n.element {\n    position: fixed;\n    bottom: 20px;\n    right: 20px;\n}\n```\n\n### 5. Sticky\n```css\n.element {\n    position: sticky;\n    top: 0;\n}\n```\n\n## Z-index\nMengontrol tumpukan elemen.\n\n```css\n.box1 {\n    position: relative;\n    z-index: 1;\n}\n\n.box2 {\n    position: relative;\n    z-index: 2; /* Akan di atas box1 */\n}\n```\n\n## Contoh Lengkap:\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        .container {\n            position: relative;\n            height: 400px;\n            border: 2px solid #333;\n            margin: 20px;\n        }\n        \n        .box {\n            width: 100px;\n            height: 100px;\n            position: absolute;\n        }\n        \n        .red {\n            background: red;\n            top: 50px;\n            left: 50px;\n            z-index: 1;\n        }\n        \n        .blue {\n            background: blue;\n            top: 80px;\n            left: 80px;\n            z-index: 2;\n        }\n        \n        .green {\n            background: green;\n            top: 110px;\n            left: 110px;\n            z-index: 3;\n        }\n        \n        .fixed-button {\n            position: fixed;\n            bottom: 20px;\n            right: 20px;\n            background: #007bff;\n            color: white;\n            padding: 10px 20px;\n            border: none;\n            border-radius: 5px;\n            cursor: pointer;\n        }\n        \n        .sticky-header {\n            position: sticky;\n            top: 0;\n            background: #333;\n            color: white;\n            padding: 10px;\n            z-index: 100;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"sticky-header\">Sticky Header</div>\n    \n    <div class=\"container\">\n        <div class=\"box red\">Red (z:1)</div>\n        <div class=\"box blue\">Blue (z:2)</div>\n        <div class=\"box green\">Green (z:3)</div>\n    </div>\n    \n    <button class=\"fixed-button\">Fixed Button</button>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Buat dua box dengan positioning absolute yang saling tumpang tindih dan gunakan z-index",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "div": ["Box Merah", "Box Biru"]
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        .container {\n            position: relative;\n            height: 200px;\n        }\n        /* Tulis CSS untuk box positioning */\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"box red\">Box Merah</div>\n        <div class=\"box blue\">Box Biru</div>\n    </div>\n</body>\n</html>"
+    }
+  }
+}

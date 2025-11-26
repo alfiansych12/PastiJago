@@ -1,0 +1,145 @@
+{
+  "1": {
+    "title": "Pengenalan HTML & Struktur Dasar",
+    "theory": "# Apa itu HTML?\n\nHTML (HyperText Markup Language) adalah bahasa markup untuk membuat struktur halaman web. HTML memberi struktur dan makna kepada konten dengan menggunakan tag (elemen).\n\n## Struktur Dasar HTML\n\nSetiap halaman HTML harus memiliki struktur dasar berikut (full code):\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Judul Halaman</title>\n</head>\n<body>\n    <h1>Heading Pertama</h1>\n    <p>Paragraf pertama.</p>\n</body>\n</html>\n```\n\n## Penjelasan Setiap Elemen (dengan contoh kode lengkap):\n\n### DOCTYPE\nDeklarasi tipe dokumen HTML5, wajib di awal:\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Judul Halaman</title>\n</head>\n<body>\n    <!-- Konten di sini -->\n</body>\n</html>\n```\n\n### HTML Element\nElemen root yang membungkus semua konten:\n\n```html\n<!DOCTYPE html>\n<html>\n    <head>\n        <title>Judul Halaman</title>\n    </head>\n    <body>\n        <!-- Konten -->\n    </body>\n</html>\n```\n\n### Head\nBagian metadata dan judul halaman:\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Judul Halaman</title>\n    <!-- Meta information, links CSS, scripts -->\n</head>\n<body>\n    <!-- Konten -->\n</body>\n</html>\n```\n\n### Body\nBagian yang ditampilkan di browser:\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Judul Halaman</title>\n</head>\n<body>\n    <h1>Heading</h1>\n    <p>Konten yang ditampilkan di browser</p>\n</body>\n</html>\n```\n\n## Contoh Lengkap Halaman HTML (full code):\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Web Pertamaku</title>\n</head>\n<body>\n    <h1>Selamat Datang!</h1>\n    <p>Ini adalah halaman web pertama saya.</p>\n    <p>Di sini saya mempelajari dasar-dasar HTML.</p>\n</body>\n</html>\n```\n\n## Hasil di Browser:\n\nKetika file HTML di atas dibuka di browser, Anda akan melihat:\n- **Tab browser menampilkan:** \"Web Pertamaku\" (dari `<title>`)\n- **Halaman menampilkan:**\n  - \"Selamat Datang!\" (heading besar)\n  - \"Ini adalah halaman web pertama saya.\" (paragraf)\n  - \"Di sini saya mempelajari dasar-dasar HTML.\" (paragraf kedua)",
+    "challenge": {
+      "description": "Buat struktur HTML dasar dengan judul halaman 'Belajar HTML' dan heading 'Halo Dunia!'",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "head": {
+            "title": "Belajar HTML"
+          },
+          "body": {
+            "h1": "Halo Dunia!"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Belajar HTML</title>\n</head>\n<body>\n    <h1>Halo Dunia!</h1>\n</body>\n</html>"
+    }
+  },
+  "2": {
+    "title": "Heading dan Paragraph",
+    "theory": "# Heading dan Paragraph\n\n## Heading (h1 - h6)\n\nHeading digunakan untuk judul dan sub-judul dengan tingkat kepentingan berbeda. Ada 6 level heading. Berikut contoh struktur HTML lengkap untuk heading:\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Contoh Heading</title>\n</head>\n<body>\n    <h1>Heading Level 1 - Paling Penting (Biasanya judul halaman)</h1>\n    <h2>Heading Level 2 - Sub judul utama</h2>\n    <h3>Heading Level 3 - Sub judul lanjutan</h3>\n    <h4>Heading Level 4 - Lebih kecil lagi</h4>\n    <h5>Heading Level 5 - Bahkan lebih kecil</h5>\n    <h6>Heading Level 6 - Paling Kecil</h6>\n</body>\n</html>\n```\n\n### Aturan Heading:\n- `<h1>` adalah **yang terpenting**, gunakan 1x per halaman\n- `<h2>` - `<h6>` untuk sub-judul\n- Gunakan secara **hierarki** (jangan langsung ke h3 dari h1)\n- Penting untuk SEO dan accessibility\n\n## Paragraph\n\nElemen `<p>` digunakan untuk paragraf teks. Berikut contoh struktur HTML lengkap untuk paragraf:\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Contoh Paragraph</title>\n</head>\n<body>\n    <h1>Artikel Tentang Web</h1>\n    \n    <p>Ini adalah paragraf pertama. Browser akan secara otomatis memberi jarak sebelum dan sesudah paragraph.</p>\n    \n    <p>Ini adalah paragraf kedua dengan teks yang lebih panjang yang akan membentuk sebuah paragraf utuh di halaman web.</p>\n    \n    <p>Setiap paragraph dipisahkan dengan spasi otomatis yang dibuat oleh browser.</p>\n</body>\n</html>\n```\n\n## Contoh Struktur Halaman Lengkap (full code):\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Blog Saya</title>\n</head>\n<body>\n    <h1>Selamat Datang di Blog Saya</h1>\n    \n    <h2>Artikel 1: Belajar HTML</h2>\n    <p>HTML adalah bahasa markup yang digunakan untuk membuat struktur halaman web.</p>\n    <p>Dengan HTML, kita dapat membuat judul, paragraf, list, link, gambar, dan banyak elemen lainnya.</p>\n    \n    <h2>Artikel 2: Pentingnya CSS</h2>\n    <p>CSS digunakan untuk mengatur tampilan dan style dari halaman HTML.</p>\n    <p>Kombinasi HTML dan CSS akan menghasilkan halaman web yang indah dan responsif.</p>\n    \n    <h3>Tips Belajar Web Development</h3>\n    <p>Mulai dari yang paling dasar, yaitu HTML dan CSS.</p>\n    <p>Setelah menguasai dasar, barulah pelajari JavaScript untuk interaktivitas.</p>\n</body>\n</html>\n```\n\n## Hasil di Browser:\n\nHalaman di atas akan menampilkan:\n- **\"Selamat Datang di Blog Saya\"** - heading besar (h1)\n- **\"Artikel 1: Belajar HTML\"** - heading medium (h2)\n- Dua paragraf tentang HTML\n- **\"Artikel 2: Pentingnya CSS\"** - heading medium (h2)\n- Dua paragraf tentang CSS\n- **\"Tips Belajar Web Development\"** - heading lebih kecil (h3)\n- Dua paragraf tips",
+    "challenge": {
+      "description": "Buat halaman dengan heading level 1 'Programming', heading level 2 'HTML Basics', dan dua paragraph dengan teks bebas",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "h1": "Programming",
+            "h2": "HTML Basics",
+            "p": ["paragraph1", "paragraph2"]
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Programming</title>\n</head>\n<body>\n    <h1>Programming</h1>\n    <h2>HTML Basics</h2>\n    <p>Paragraf pertama Anda di sini.</p>\n    <p>Paragraf kedua Anda di sini.</p>\n</body>\n</html>"
+    }
+  },
+  "3": {
+    "title": "Text Formatting dan Lists",
+    "theory": "# Format Teks dan Daftar\n\n## Text Formatting\n\n```html\n<p><b>Teks tebal</b> dengan <strong>strong importance</strong></p>\n<p><i>Teks miring</i> dan <em>emphasized text</em></p>\n<p><mark>Teks ditandai</mark> dan <small>teks kecil</small></p>\n<p><del>Teks dicoret</del> dan <ins>teks disisipkan</ins></p>\n<p>H<sub>2</sub>O dan x<sup>2</sup></p>\n```\n\n## Unordered List (ul)\nDaftar tanpa urutan tertentu.\n\n```html\n<ul>\n    <li>Item 1</li>\n    <li>Item 2</li>\n    <li>Item 3</li>\n</ul>\n```\n\n## Ordered List (ol)\nDaftar dengan urutan nomor.\n\n```html\n<ol>\n    <li>Langkah pertama</li>\n    <li>Langkah kedua</li>\n    <li>Langkah ketiga</li>\n</ol>\n```\n\n## Contoh Lengkap:\n```html\n<!DOCTYPE html>\n<html>\n<body>\n    <h1>Resep Membuat Kopi</h1>\n    \n    <h2>Bahan-bahan:</h2>\n    <ul>\n        <li><strong>Kopi bubuk</strong> - 2 sendok</li>\n        <li><em>Air panas</em> - 200ml</li>\n        <li>Gula <small>(optional)</small></li>\n    </ul>\n    \n    <h2>Langkah-langkah:</h2>\n    <ol>\n        <li>Masukkan kopi ke dalam gelas</li>\n        <li>Tuang air panas</li>\n        <li>Aduk hingga rata</li>\n        <li>Tambahkan gula jika diinginkan</li>\n    </ol>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Buat daftar belanja dengan unordered list dan langkah membuat teh dengan ordered list",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "h2": "Daftar Belanja",
+            "ul": "list",
+            "h2_2": "Cara Membuat Teh",
+            "ol": "list"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<body>\n    <h2>Daftar Belanja:</h2>\n    <!-- Buat unordered list untuk daftar belanja -->\n    \n    <h2>Cara Membuat Teh:</h2>\n    <!-- Buat ordered list untuk langkah membuat teh -->\n</body>\n</html>"
+    }
+  },
+  "4": {
+    "title": "Links dan Images",
+    "theory": "# Hyperlinks dan Gambar\n\n## Hyperlinks (Anchor)\nElemen `<a>` untuk membuat link.\n\n```html\n<!-- Link ke external site -->\n<a href=\"https://www.google.com\">Kunjungi Google</a>\n\n<!-- Link ke halaman lain -->\n<a href=\"about.html\">Tentang Kami</a>\n\n<!-- Link dengan target -->\n<a href=\"https://example.com\" target=\"_blank\">Buka di Tab Baru</a>\n\n<!-- Link sebagai button -->\n<a href=\"#\" style=\"text-decoration: none; padding: 10px; background: blue; color: white;\">Click Me</a>\n```\n\n## Images\nElemen `<img>` untuk menampilkan gambar.\n\n```html\n<!-- Gambar dasar -->\n<img src=\"gambar.jpg\" alt=\"Deskripsi gambar\">\n\n<!-- Gambar dengan ukuran -->\n<img src=\"photo.png\" alt=\"Foto profil\" width=\"200\" height=\"150\">\n\n<!-- Gambar dari URL external -->\n<img src=\"https://example.com/image.jpg\" alt=\"Gambar external\">\n```\n\n## Attributes Penting:\n- `href`: URL tujuan link\n- `target`: _blank untuk buka di tab baru\n- `src`: Sumber gambar\n- `alt`: Teks alternatif untuk accessibility\n- `width/height`: Dimensi gambar\n\n## Contoh Lengkap:\n```html\n<!DOCTYPE html>\n<html>\n<body>\n    <h1>Portfolio Saya</h1>\n    \n    <img src=\"profile.jpg\" alt=\"Foto Profil\" width=\"150\" height=\"150\">\n    \n    <p>\n        Kunjungi <a href=\"https://github.com/saya\" target=\"_blank\">GitHub saya</a>\n        untuk melihat project-project lainnya.\n    </p>\n    \n    <p>\n        <a href=\"contact.html\">Hubungi Saya</a> | \n        <a href=\"projects.html\">Project Saya</a>\n    </p>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Buat link ke 'https://example.com' dengan teks 'Visit Example' dan gambar dengan alt text 'Sample Image'",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "a": "Visit Example",
+            "img": "image"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<body>\n    <!-- Buat link ke https://example.com -->\n    \n    <!-- Buat gambar dengan alt text -->\n</body>\n</html>"
+    }
+  },
+  "5": {
+    "title": "Tables dan Forms Dasar",
+    "theory": "# Tabel dan Formulir\n\n## Tables\nUntuk menampilkan data dalam bentuk tabel.\n\n```html\n<table border=\"1\">\n    <tr>\n        <th>Nama</th>\n        <th>Usia</th>\n        <th>Kota</th>\n    </tr>\n    <tr>\n        <td>Budi</td>\n        <td>25</td>\n        <td>Jakarta</td>\n    </tr>\n    <tr>\n        <td>Sari</td>\n        <td>22</td>\n        <td>Bandung</td>\n    </tr>\n</table>\n```\n\n## Forms Dasar\nUntuk mengumpulkan input dari user.\n\n```html\n<form>\n    <label for=\"nama\">Nama:</label>\n    <input type=\"text\" id=\"nama\" name=\"nama\"><br><br>\n    \n    <label for=\"email\">Email:</label>\n    <input type=\"email\" id=\"email\" name=\"email\"><br><br>\n    \n    <label for=\"pesan\">Pesan:</label>\n    <textarea id=\"pesan\" name=\"pesan\"></textarea><br><br>\n    \n    <input type=\"submit\" value=\"Kirim\">\n</form>\n```\n\n## Elemen Table:\n- `<table>`: Container tabel\n- `<tr>`: Table row (baris)\n- `<th>`: Table header (header kolom)\n- `<td>`: Table data (data sel)\n\n## Elemen Form:\n- `<form>`: Container formulir\n- `<input>`: Field input\n- `<label>`: Label untuk input\n- `<textarea>`: Area teks multi-baris\n\n## Contoh Lengkap:\n```html\n<!DOCTYPE html>\n<html>\n<body>\n    <h2>Data Siswa</h2>\n    <table border=\"1\">\n        <tr>\n            <th>NIS</th>\n            <th>Nama</th>\n            <th>Kelas</th>\n        </tr>\n        <tr>\n            <td>101</td>\n            <td>Andi</td>\n            <td>X RPL 1</td>\n        </tr>\n        <tr>\n            <td>102</td>\n            <td>Budi</td>\n            <td>X RPL 2</td>\n        </tr>\n    </table>\n    \n    <h2>Form Pendaftaran</h2>\n    <form>\n        <label for=\"nama\">Nama Lengkap:</label>\n        <input type=\"text\" id=\"nama\" name=\"nama\"><br><br>\n        \n        <input type=\"submit\" value=\"Daftar\">\n    </form>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Buat tabel dengan header 'Produk' dan 'Harga', lalu form dengan input nama dan tombol submit",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "table": "table",
+            "form": "form"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<body>\n    <!-- Buat tabel dengan header Produk dan Harga -->\n    \n    <!-- Buat form dengan input dan submit -->\n</body>\n</html>"
+    }
+  },
+  "6": {
+    "title": "Semantic HTML",
+    "theory": "# Semantic HTML\n\nSemantic HTML menggunakan elemen yang bermakna untuk struktur halaman.\n\n## Elemen Semantic:\n```html\n<header>Header halaman</header>\n<nav>Navigasi</nav>\n<main>Konten utama</main>\n<section>Bagian dari konten</section>\n<article>Artikel independen</article>\n<aside>Konten samping</aside>\n<footer>Footer halaman</footer>\n```\n\n## Contoh Layout Semantic:\n```html\n<!DOCTYPE html>\n<html>\n<body>\n    <header>\n        <h1>Website Saya</h1>\n        <nav>\n            <a href=\"#home\">Home</a>\n            <a href=\"#about\">About</a>\n            <a href=\"#contact\">Contact</a>\n        </nav>\n    </header>\n    \n    <main>\n        <article>\n            <h2>Judul Artikel</h2>\n            <p>Isi artikel...</p>\n        </article>\n    </main>\n    \n    <footer>\n        <p>&copy; 2024 Website Saya</p>\n    </footer>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Buat layout dengan header, navigation, main content, dan footer",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "header": "header",
+            "nav": "nav",
+            "main": "main",
+            "footer": "footer"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<body>\n    <!-- Buat header -->\n    \n    <!-- Buat navigation -->\n    \n    <!-- Buat main content -->\n    \n    <!-- Buat footer -->\n</body>\n</html>"
+    }
+  },
+  "7": {
+    "title": "Forms Lanjutan",
+    "theory": "# Forms Lanjutan\n\n## Input Types\nBerikut contoh berbagai input di HTML:\n\n```html\n<input type=\"text\">      <!-- Input teks -->\n<input type=\"email\">     <!-- Input email -->\n<input type=\"password\">  <!-- Input password -->\n<input type=\"number\">    <!-- Input angka -->\n<input type=\"date\">      <!-- Input tanggal -->\n<input type=\"checkbox\">  <!-- Checkbox -->\n<input type=\"radio\">     <!-- Radio button -->\n<input type=\"file\">      <!-- Upload file -->\n<select>\n  <option>Pilihan 1</option>\n  <option>Pilihan 2</option>\n</select>\n```\n\n## Form Validation\nContoh validasi input:\n\n```html\n<input type=\"text\" required>\n<input type=\"email\" required>\n<input type=\"password\" minlength=\"8\">\n```\n\n## Contoh Form Lengkap\nBerikut struktur HTML lengkap untuk form pendaftaran:\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n  <title>Form Pendaftaran</title>\n</head>\n<body>\n  <form>\n    <label for=\"nama\">Nama Lengkap:</label>\n    <input type=\"text\" id=\"nama\" name=\"nama\" required><br><br>\n\n    <label for=\"email\">Email:</label>\n    <input type=\"email\" id=\"email\" name=\"email\" required><br><br>\n\n    <label for=\"password\">Password:</label>\n    <input type=\"password\" id=\"password\" name=\"password\" minlength=\"8\" required><br><br>\n\n    <label>Jenis Kelamin:</label>\n    <input type=\"radio\" id=\"laki\" name=\"jenis-kelamin\" value=\"laki\">\n    <label for=\"laki\">Laki-laki</label>\n    <input type=\"radio\" id=\"perempuan\" name=\"jenis-kelamin\" value=\"perempuan\">\n    <label for=\"perempuan\">Perempuan</label><br><br>\n\n    <label>Hobi:</label>\n    <input type=\"checkbox\" id=\"membaca\" name=\"hobi\" value=\"membaca\">\n    <label for=\"membaca\">Membaca</label>\n    <input type=\"checkbox\" id=\"olahraga\" name=\"hobi\" value=\"olahraga\">\n    <label for=\"olahraga\">Olahraga</label><br><br>\n\n    <input type=\"submit\" value=\"Daftar\">\n  </form>\n</body>\n</html>\n```\n\nDengan contoh di atas, user bisa langsung melihat struktur form HTML yang benar dan lengkap.",
+    "challenge": {
+      "description": "Buat form pendaftaran dengan input text, email, password, radio button, dan checkbox",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "form": "form"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<body>\n    <!-- Buat form pendaftaran -->\n</body>\n</html>"
+    }
+  },
+  "8": {
+    "title": "Multimedia",
+    "theory": "# Multimedia HTML\n\n## Audio:\n```html\n<audio controls>\n    <source src=\"audio.mp3\" type=\"audio/mpeg\">\n    Browser Anda tidak support audio element.\n</audio>\n```\n\n## Video:\n```html\n<video width=\"320\" height=\"240\" controls>\n    <source src=\"video.mp4\" type=\"video/mp4\">\n    Browser Anda tidak support video element.\n</video>\n```\n\n## YouTube Embed:\n```html\n<iframe width=\"560\" height=\"315\" \n        src=\"https://www.youtube.com/embed/VIDEO_ID\" \n        frameborder=\"0\" \n        allowfullscreen>\n</iframe>\n```\n\n## Contoh Multimedia:\n```html\n<!DOCTYPE html>\n<html>\n<body>\n    <h2>Audio Player</h2>\n    <audio controls>\n        <source src=\"music.mp3\" type=\"audio/mpeg\">\n    </audio>\n    \n    <h2>Video Player</h2>\n    <video width=\"400\" controls>\n        <source src=\"movie.mp4\" type=\"video/mp4\">\n    </video>\n    \n    <h2>YouTube Video</h2>\n    <iframe width=\"560\" height=\"315\" \n            src=\"https://www.youtube.com/embed/dQw4w9WgXcQ\" \n            frameborder=\"0\" \n            allowfullscreen>\n    </iframe>\n</body>\n</html>\n```",
+    "challenge": {
+      "description": "Buat halaman dengan audio player, video player, dan embed YouTube",
+      "expectedStructure": {
+        "doctype": "html",
+        "html": {
+          "body": {
+            "audio": "audio",
+            "video": "video",
+            "iframe": "iframe"
+          }
+        }
+      },
+      "starterCode": "<!DOCTYPE html>\n<html>\n<body>\n    <!-- Buat audio player -->\n    \n    <!-- Buat video player -->\n    \n    <!-- Buat YouTube embed -->\n</body>\n</html>"
+    }
+  }
+}
