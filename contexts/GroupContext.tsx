@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import Swal from 'sweetalert2';
-import { supabase } from '@/lib/supabase';
+import { getSocket } from '@/lib/socket';
 
 export interface GroupMessage {
   id: string;
@@ -53,8 +53,8 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
   const [userGroups, setUserGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [messageChannel, setMessageChannel] = useState<any>(null);
-  const [groupChannel, setGroupChannel] = useState<any>(null);
+  // Socket.io state
+  const [socket, setSocket] = useState<any>(null);
 
   const refreshGroups = useCallback(() => {
     const load = async () => {
@@ -70,53 +70,8 @@ export function GroupProvider({ children }: { children: ReactNode }) {
 
       console.log('Refreshing groups for user:', user.id);
 
-      try {
-        // Fetch via server endpoint yang menggunakan service_role untuk bypass RLS
-        const session = await supabase.auth.getSession();
-        const token = session.data?.session?.access_token;
-        
-        const res = await fetch('/api/group/list', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          console.error('Error fetching groups via API:', err);
-          setGroups([]);
-          setUserGroups([]);
-          setCurrentGroup(null);
-          setIsLoading(false);
-          return;
-        }
-
-        const { groups: fetchedGroups } = await res.json();
-        console.log('Fetched groups count:', fetchedGroups.length);
-
-        setGroups(fetchedGroups);
-
-        const userGroupList = fetchedGroups.filter((group: Group) => 
-          String(group.teacherId) === String(user.id) || 
-          group.members.some(member => member.userId === user.id)
-        );
-        console.log('User groups (teach or member):', userGroupList.length, userGroupList.map((g: Group) => g.name));
-        setUserGroups(userGroupList);
-
-        if (currentGroup) {
-          const updatedCurrentGroup = fetchedGroups.find((g: Group) => g.id === currentGroup.id);
-          if (updatedCurrentGroup) setCurrentGroup(updatedCurrentGroup);
-        }
-      } catch (error) {
-        console.error('Error loading groups from API:', error);
-        setGroups([]);
-        setUserGroups([]);
-        setCurrentGroup(null);
-      } finally {
-        setIsLoading(false);
-      }
+      // Simulasi fetch API: grup hanya di local state
+      setIsLoading(false);
     };
 
     load();
@@ -129,95 +84,50 @@ export function GroupProvider({ children }: { children: ReactNode }) {
     }
   }, [isAuthenticated, user?.id, authLoading]);
 
-  // Supabase realtime subscription for group messages
+  // Socket.io subscription for group messages
   useEffect(() => {
+    const sock = getSocket();
+    setSocket(sock);
     if (!currentGroup?.id) return;
-
-    // Unsubscribe previous channel
-    if (messageChannel) {
-      supabase.removeChannel(messageChannel);
-      setMessageChannel(null);
-    }
-
-    // Subscribe to new messages for current group
-    const channel = supabase.channel(`group-messages-${currentGroup.id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'group_messages',
-          filter: `group_id=eq.${currentGroup.id}`
-        },
-        (payload) => {
-          const newMsg = payload.new;
-          if (!newMsg) return;
-          const newMessage = {
-            id: newMsg.id,
-            userId: newMsg.user_id,
-            username: newMsg.username,
-            message: newMsg.message,
-            timestamp: newMsg.created_at,
-            type: newMsg.type || 'text',
+    sock.on('chat:init', (msgs: GroupMessage[]) => {
+      setGroups(prevGroups => prevGroups.map(group => {
+        if (group.id === currentGroup.id) {
+          return {
+            ...group,
+            messages: msgs.filter(m => m.groupId === currentGroup.id)
           };
-          setGroups(prevGroups => prevGroups.map(group => {
-            if (group.id === currentGroup.id) {
-              return {
-                ...group,
-                messages: [...(group.messages || []), newMessage]
-              };
-            }
-            return group;
-          }));
-          setCurrentGroup(prev => prev ? {
-            ...prev,
-            messages: [...(prev.messages || []), newMessage]
-          } : null);
         }
-      );
-    channel.subscribe();
-    setMessageChannel(channel);
-
-    // Cleanup on unmount or group change
+        return group;
+      }));
+      setCurrentGroup(prev => prev ? {
+        ...prev,
+        messages: msgs.filter(m => m.groupId === currentGroup.id)
+      } : null);
+    });
+    sock.on('chat:receive', (msg: GroupMessage) => {
+      if (msg.groupId !== currentGroup.id) return;
+      setGroups(prevGroups => prevGroups.map(group => {
+        if (group.id === currentGroup.id) {
+          return {
+            ...group,
+            messages: [...(group.messages || []), msg]
+          };
+        }
+        return group;
+      }));
+      setCurrentGroup(prev => prev ? {
+        ...prev,
+        messages: [...(prev.messages || []), msg]
+      } : null);
+    });
     return () => {
-      if (channel) supabase.removeChannel(channel);
-      setMessageChannel(null);
+      sock.off('chat:init');
+      sock.off('chat:receive');
     };
   }, [currentGroup?.id]);
 
   // Supabase realtime subscription for groups and group_members
-  useEffect(() => {
-    // Unsubscribe previous channel
-    if (groupChannel) {
-      supabase.removeChannel(groupChannel);
-      setGroupChannel(null);
-    }
-
-    // Subscribe to changes in groups and group_members
-    const channel = supabase.channel('groups-and-members')
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'groups'
-      }, () => {
-        refreshGroups();
-      })
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'group_members'
-      }, () => {
-        refreshGroups();
-      });
-    channel.subscribe();
-    setGroupChannel(channel);
-
-    // Cleanup on unmount
-    return () => {
-      if (channel) supabase.removeChannel(channel);
-      setGroupChannel(null);
-    };
-  }, [isAuthenticated, user?.id]);
+  // Hapus seluruh blok Supabase channel, tidak diperlukan
 
   const generateJoinCode = (): string => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -236,67 +146,18 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   };
 
   const sendMessage = async (groupId: string, message: string, type: 'text' | 'code' = 'text'): Promise<boolean> => {
-    if (!user) return false;
-
+    if (!user || !socket) return false;
     try {
-      // Persist message via server endpoint (service_role)
-      const session = await supabase.auth.getSession();
-      const token = session.data?.session?.access_token;
-      const res = await fetch('/api/group/message', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ group_id: groupId, message, type })
-      });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          console.error('Error inserting group message via API:', err);
-          Swal.fire({icon: 'error', title: 'Gagal', text: 'Gagal menyimpan pesan ke database', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
-          return false;
-        }      const { message: inserted } = await res.json();
-
-      const newMessage: GroupMessage = {
-        id: inserted?.id || Date.now().toString(),
+      socket.emit('chat:send', {
+        groupId,
         userId: user.id,
         username: user.username || user.email?.split('@')[0] || 'User',
-        message: message,
-        timestamp: inserted?.created_at || new Date().toISOString(),
-        type: type
-      };
-
-      const updatedGroups = groups.map(group => {
-        if (group.id === groupId) {
-          return {
-            ...group,
-            messages: [...(group.messages || []), newMessage]
-          };
-        }
-        return group;
+        message,
+        type
       });
-
-      setGroups(updatedGroups);
-      
-      if (currentGroup?.id === groupId) {
-        setCurrentGroup(prev => prev ? {
-          ...prev,
-          messages: [...(prev.messages || []), newMessage]
-        } : null);
-      }
-
-      const updatedUserGroups = userGroups.map(group => 
-        group.id === groupId 
-          ? { ...group, messages: [...(group.messages || []), newMessage] }
-          : group
-      );
-      setUserGroups(updatedUserGroups);
-
-      // Do not persist to localStorage; DB is the single source of truth
       return true;
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Error sending message via socket:', error);
       Swal.fire({icon: 'error', title: 'Gagal', text: 'Gagal mengirim pesan', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
       return false;
     }
@@ -305,33 +166,20 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   const createGroup = async (name: string, description: string): Promise<boolean> => {
     if (!user) return false;
     try {
-      const session = await supabase.auth.getSession();
-      const token = session.data?.session?.access_token;
-      const res = await fetch('/api/group/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ name, description })
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        console.error('Error creating group via API:', err);
-        Swal.fire({icon: 'error', title: 'Gagal', text: 'Gagal membuat grup (DB)', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
-        return false;
+      // Generate join code di sini
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = '';
+      for (let i = 0; i < 6; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
       }
-
-      const { group: insertedGroup } = await res.json();
-
+      const joinCode = result;
       const newGroup: Group = {
-        id: String(insertedGroup.id),
-        name: insertedGroup.name,
-        description: insertedGroup.description,
-        joinCode: insertedGroup.join_code,
-        teacherId: insertedGroup.teacher_id,
-        createdAt: insertedGroup.created_at,
+        id: String(Date.now()),
+        name,
+        description,
+        joinCode,
+        teacherId: user.id,
+        createdAt: new Date().toISOString(),
         members: [{
           userId: user.id,
           username: user.username || user.email?.split('@')[0] || 'Teacher',
@@ -340,14 +188,9 @@ export function GroupProvider({ children }: { children: ReactNode }) {
         }],
         messages: []
       };
-
-      const updatedGroups = [...groups, newGroup];
-      setGroups(updatedGroups);
+      setGroups(prev => [...prev, newGroup]);
       setUserGroups(prev => [...prev, newGroup]);
       setCurrentGroup(newGroup);
-
-      // Do not persist to localStorage; DB is the single source of truth
-
       Swal.fire({icon: 'success', title: 'Berhasil!', text: 'Grup berhasil dibuat!', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
       return true;
     } catch (error) {
@@ -355,70 +198,39 @@ export function GroupProvider({ children }: { children: ReactNode }) {
       Swal.fire({icon: 'error', title: 'Gagal', text: 'Gagal membuat grup', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
       return false;
     }
-  };
+  }
 
   const joinGroup = async (joinCode: string): Promise<boolean> => {
     if (!user) return false;
-
     try {
-      const session = await supabase.auth.getSession();
-      const token = session.data?.session?.access_token;
-      const res = await fetch('/api/group/join', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ join_code: joinCode.trim().toUpperCase() })
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        console.error('Error joining group via API:', err);
-        Swal.fire({icon: 'error', title: 'Gagal', text: err?.error || 'Kode grup tidak valid', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
+      // Fetch groups from API agar data grup selalu up-to-date dan bisa diakses semua user
+      const res = await fetch('/api/group/list');
+      const data = await res.json();
+      const groupsFromApi = data.groups || [];
+      console.log('Groups from API:', groupsFromApi);
+      const inputCode = joinCode.trim().toUpperCase();
+      const foundGroup = groupsFromApi.find(
+        g => typeof g.join_code === 'string' && g.join_code.toUpperCase() === inputCode
+      );
+      console.log('Found group:', foundGroup);
+      if (!foundGroup) {
+        Swal.fire({icon: 'error', title: 'Gagal', text: 'Kode grup tidak valid', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
         return false;
       }
-
-      const { group } = await res.json();
-
-      const updatedGroups = groups.map(g => {
-        if (String(g.id) === String(group.id)) {
-          return {
-            ...g,
-            members: [...(g.members || []), {
-              userId: user.id,
-              username: user.username || user.email?.split('@')[0] || 'User',
-              joinedAt: new Date().toISOString(),
-              role: 'student'
-            }]
-          };
-        }
-        return g;
-      });
-
-      // If group wasn't in local list, append
-      if (!updatedGroups.find(g => String(g.id) === String(group.id))) {
-        updatedGroups.push({
-          id: String(group.id),
-          name: group.name,
-          description: group.description,
-          joinCode: group.join_code,
-          teacherId: group.teacher_id,
-          createdAt: group.created_at,
-          members: [{ userId: user.id, username: user.username || user.email?.split('@')[0] || 'User', joinedAt: new Date().toISOString(), role: 'student' }],
-          messages: []
+      // Tambahkan user ke member jika belum ada
+      if (!foundGroup.members.some(m => m.userId === user.id)) {
+        foundGroup.members.push({
+          userId: user.id,
+          username: user.username || user.email?.split('@')[0] || 'User',
+          joinedAt: new Date().toISOString(),
+          role: 'student'
         });
       }
-
-      setGroups(updatedGroups);
-      setUserGroups(prev => [...prev, updatedGroups.find(g => String(g.id) === String(group.id))!]);
-      setCurrentGroup(updatedGroups.find(g => String(g.id) === String(group.id)) || null);
-
-      // Do not persist to localStorage; DB is the single source of truth
-
+      setGroups(groupsFromApi);
+      setUserGroups(prev => [...prev, foundGroup]);
+      setCurrentGroup(foundGroup);
       Swal.fire({icon: 'success', title: 'Berhasil!', text: 'Berhasil bergabung dengan grup!', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
       return true;
-
     } catch (error) {
       console.error('Error joining group:', error);
       Swal.fire({icon: 'error', title: 'Gagal', text: 'Gagal bergabung dengan grup', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
@@ -427,88 +239,35 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   };
 
   const leaveGroup = (groupId: string) => {
-    // server-side leave (delete membership)
     if (!user) return;
-
-    (async () => {
-      try {
-        const session = await supabase.auth.getSession();
-        const token = session.data?.session?.access_token;
-        const res = await fetch('/api/group/leave', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({ group_id: groupId })
-        });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          console.error('Error leaving group via API:', err);
-          Swal.fire({icon: 'error', title: 'Gagal', text: 'Gagal keluar dari grup (DB)', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
-          return;
-        }
-
-        // update local state
-        const updatedGroups = groups.map(group => {
-          if (group.id === groupId) {
-            return {
-              ...group,
-              members: group.members.filter(member => member.userId !== user.id)
-            };
-          }
-          return group;
-        }).filter(group => group.members.length > 0);
-
-        setGroups(updatedGroups);
-        setUserGroups(prev => prev.filter(group => group.id !== groupId));
-        
-        if (currentGroup?.id === groupId) {
-          setCurrentGroup(prev => prev?.id === groupId ? null : prev);
-        }
-
-        // Do not persist to localStorage; DB is the single source of truth
-
-        Swal.fire({icon: 'success', title: 'Berhasil!', text: 'Berhasil keluar dari grup', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
-      } catch (error) {
-        console.error('Error leaving group:', error);
-        Swal.fire({icon: 'error', title: 'Gagal', text: 'Gagal keluar dari grup', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
+    // update local state
+    const updatedGroups = groups.map(group => {
+      if (group.id === groupId) {
+        return {
+          ...group,
+          members: group.members.filter(member => member.userId !== user.id)
+        };
       }
-    })();
-  };
+      return group;
+    }).filter(group => group.members.length > 0);
+    setGroups(updatedGroups);
+    setUserGroups(prev => prev.filter(group => group.id !== groupId));
+    if (currentGroup?.id === groupId) {
+      setCurrentGroup(null);
+    }
+    Swal.fire({icon: 'success', title: 'Berhasil!', text: 'Berhasil keluar dari grup', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
+  }
 
   const deleteGroup = async (groupId: string): Promise<boolean> => {
     if (!user) return false;
-
     try {
-      const session = await supabase.auth.getSession();
-      const token = session.data?.session?.access_token;
-      const res = await fetch('/api/group/delete', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ group_id: groupId })
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        console.error('Error deleting group via API:', err);
-        Swal.fire({icon: 'error', title: 'Gagal', text: err?.error || 'Gagal menghapus grup', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
-        return false;
-      }
-
-      // Update local state
+      // Simulasi hapus grup tanpa Supabase
       const updatedGroups = groups.filter(g => g.id !== groupId);
       setGroups(updatedGroups);
       setUserGroups(prev => prev.filter(g => g.id !== groupId));
-
       if (currentGroup?.id === groupId) {
         setCurrentGroup(null);
       }
-
       Swal.fire({icon: 'success', title: 'Berhasil!', text: 'Grup berhasil dihapus', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
       return true;
     } catch (error) {
@@ -516,7 +275,9 @@ export function GroupProvider({ children }: { children: ReactNode }) {
       Swal.fire({icon: 'error', title: 'Gagal', text: 'Gagal menghapus grup', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
       return false;
     }
-  };  return (
+  };
+
+  return (
     <GroupContext.Provider value={{
       groups,
       currentGroup,

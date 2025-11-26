@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -192,16 +193,18 @@ export default function BelajarPage() {
 
         {/* Learning Paths Grid */}
         <div className="row g-4">
-          {learningPaths.map((path) => (
+          {learningPaths.map((path, idx) => (
             <div key={path.id} className="col-lg-4 col-md-6">
-              <div 
-                className={`glass-effect rounded-4 p-4 h-100 hover-lift position-relative overflow-hidden ${
-                  !path.available ? 'opacity-50' : ''
-                }`}
+              <motion.div
+                className={`glass-effect rounded-4 p-4 h-100 hover-lift position-relative overflow-hidden ${!path.available ? 'opacity-50' : ''}`}
                 style={{
                   border: `2px solid transparent`,
                   background: `linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%), ${path.gradient}`
                 }}
+                initial={{ opacity: 0, y: 40, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.1 + idx * 0.12, duration: 0.7, type: 'spring', stiffness: 60, damping: 18 }}
+                whileHover={{ scale: 1.04, boxShadow: '0 8px 32px #00000022' }}
               >
                 {/* Path Header */}
                 <div className="d-flex justify-content-between align-items-start mb-3">
@@ -235,13 +238,13 @@ export default function BelajarPage() {
                     <span className="text-light fw-bold">{path.progress}%</span>
                   </div>
                   <div className="progress glass-effect" style={{ height: '8px' }}>
-                    <div 
+                    <motion.div
                       className="progress-bar"
-                      style={{ 
-                        width: `${path.progress}%`,
-                        background: path.gradient
-                      }}
-                    ></div>
+                      initial={{ width: 0 }}
+                      animate={{ width: `${path.progress}%` }}
+                      transition={{ duration: 1.1, delay: 0.2 + idx * 0.12, ease: 'easeOut' }}
+                      style={{ background: path.gradient, height: '8px' }}
+                    />
                   </div>
                 </div>
 
@@ -262,15 +265,17 @@ export default function BelajarPage() {
                   </div>
                   
                   {path.available ? (
-                    <Link 
-                      href={`/belajar/${path.id}`}
-                      className="btn btn-light btn-sm px-4 py-2 fw-bold"
-                      style={{ color: path.gradient.includes('#f59e0b') ? '#d97706' : 
-                               path.gradient.includes('#dc2626') ? '#b91c1c' : '#0369a1' }}
-                    >
-                      Lanjutkan
-                      <i className="fas fa-arrow-right ms-2 pulse-glow"></i>
-                    </Link>
+                    <motion.div whileHover={{ scale: 1.08, boxShadow: '0 0 16px #fffbe7' }} style={{ display: 'inline-block' }}>
+                      <Link 
+                        href={`/belajar/${path.id}`}
+                        className="btn btn-light btn-sm px-4 py-2 fw-bold"
+                        style={{ color: path.gradient.includes('#f59e0b') ? '#d97706' : 
+                                 path.gradient.includes('#dc2626') ? '#b91c1c' : '#0369a1' }}
+                      >
+                        Lanjutkan
+                        <i className="fas fa-arrow-right ms-2 pulse-glow"></i>
+                      </Link>
+                    </motion.div>
                   ) : (
                     <button className="btn btn-secondary btn-sm px-4 py-2" disabled>
                       Segera Hadir
@@ -289,7 +294,7 @@ export default function BelajarPage() {
                     }}
                   ></div>
                 </div>
-              </div>
+            </motion.div>
             </div>
           ))}
         </div>
