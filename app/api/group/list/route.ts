@@ -54,7 +54,7 @@ export async function GET(req: Request) {
           id: String(g.id),
           name: g.name,
           description: g.description,
-          joinCode: g.join_code,
+          join_code: g.join_code, // gunakan snake_case agar konsisten dengan frontend
           teacherId: g.teacher_id,
           createdAt: g.created_at,
           members: formattedMembers,

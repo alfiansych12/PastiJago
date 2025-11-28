@@ -23,6 +23,7 @@ export default function BelajarPage() {
   const { isAuthenticated, user, getUserProgress } = useAuth();
   const [learningPaths, setLearningPaths] = useState<LearningPath[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     const loadProgress = async () => {
@@ -104,27 +105,52 @@ export default function BelajarPage() {
     loadProgress();
   }, [isAuthenticated, getUserProgress]);
 
+  // Intercept klik card jika belum login
+  const handleCardClick = (id: string) => {
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
+    window.location.href = `/belajar/${id}`;
+  };
+
   if (!isAuthenticated) {
     return (
-      <div className="min-vh-100 text-light position-relative py-5 mt-5">
-        <div className="container position-relative z-2">
-          <div className="row justify-content-center">
-            <div className="col-md-6 text-center">
-              <div className="glass-effect rounded-4 p-5">
-                <i className="fas fa-lock text-warning display-1 mb-4"></i>
-                <h2 className="text-warning mb-3">Akses Ditolak</h2>
-                <p className="text-light mb-4">
-                  Anda perlu login terlebih dahulu untuk mengakses halaman belajar.
-                </p>
-                <Link href="/login" className="btn btn-warning btn-lg">
-                  <i className="fas fa-sign-in-alt me-2"></i>
-                  Login Sekarang
-                </Link>
+      <>
+        <div className="min-vh-100 text-light position-relative py-5 mt-5">
+          <div className="container position-relative z-2">
+            <div className="row justify-content-center">
+              <div className="col-md-6 text-center">
+                <div className="glass-effect rounded-4 p-5">
+                  <i className="fas fa-lock text-warning display-1 mb-4"></i>
+                  <h2 className="text-warning mb-3">Akses Ditolak</h2>
+                  <p className="text-light mb-4">
+                    Anda perlu login terlebih dahulu untuk mengakses halaman belajar.
+                  </p>
+                  <button className="btn btn-warning btn-lg" onClick={() => setShowLoginModal(true)}>
+                    <i className="fas fa-sign-in-alt me-2"></i>
+                    Login Sekarang
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+        {showLoginModal && (
+          <div className="modal-backdrop fade show" style={{zIndex: 9999}}>
+            <div className="modal d-block" tabIndex={-1}>
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content glass-effect p-4">
+                  <h4 className="mb-3">Login untuk Belajar</h4>
+                  <Link href="/login" className="btn btn-warning w-100 mb-2">Login</Link>
+                  <Link href="/register" className="btn btn-outline-light w-100">Daftar</Link>
+                  <button className="btn btn-link mt-3" onClick={() => setShowLoginModal(false)}>Batal</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
     );
   }
 
@@ -205,6 +231,7 @@ export default function BelajarPage() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.1 + idx * 0.12, duration: 0.7, type: 'spring', stiffness: 60, damping: 18 }}
                 whileHover={{ scale: 1.04, boxShadow: '0 8px 32px #00000022' }}
+                onClick={() => handleCardClick(path.id)}
               >
                 {/* Path Header */}
                 <div className="d-flex justify-content-between align-items-start mb-3">

@@ -60,20 +60,28 @@ export function GroupProvider({ children }: { children: ReactNode }) {
     const load = async () => {
       setIsLoading(true);
       if (!isAuthenticated || !user) {
-        console.log('Not authenticated or no user, clearing groups');
         setGroups([]);
         setUserGroups([]);
         setCurrentGroup(null);
         setIsLoading(false);
         return;
       }
-
-      console.log('Refreshing groups for user:', user.id);
-
-      // Simulasi fetch API: grup hanya di local state
-      setIsLoading(false);
+      try {
+        const res = await fetch('/api/group/list');
+        const data = await res.json();
+        const allGroups = data.groups || [];
+        setGroups(allGroups);
+        // Filter userGroups berdasarkan anggota
+        const myGroups = allGroups.filter(g => g.members.some((m: any) => m.userId === user.id));
+        setUserGroups(myGroups);
+        setIsLoading(false);
+      } catch (err) {
+        setGroups([]);
+        setUserGroups([]);
+        setCurrentGroup(null);
+        setIsLoading(false);
+      }
     };
-
     load();
   }, [isAuthenticated, user?.id]);
 
@@ -166,31 +174,17 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   const createGroup = async (name: string, description: string): Promise<boolean> => {
     if (!user) return false;
     try {
-      // Generate join code di sini
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let result = '';
-      for (let i = 0; i < 6; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      const res = await fetch('/api/group/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description, userId: user.id })
+      });
+      const data = await res.json();
+      if (!data.ok || !data.group) {
+        Swal.fire({icon: 'error', title: 'Gagal', text: data.error || 'Gagal membuat grup', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
+        return false;
       }
-      const joinCode = result;
-      const newGroup: Group = {
-        id: String(Date.now()),
-        name,
-        description,
-        joinCode,
-        teacherId: user.id,
-        createdAt: new Date().toISOString(),
-        members: [{
-          userId: user.id,
-          username: user.username || user.email?.split('@')[0] || 'Teacher',
-          joinedAt: new Date().toISOString(),
-          role: 'teacher'
-        }],
-        messages: []
-      };
-      setGroups(prev => [...prev, newGroup]);
-      setUserGroups(prev => [...prev, newGroup]);
-      setCurrentGroup(newGroup);
+      await refreshGroups();
       Swal.fire({icon: 'success', title: 'Berhasil!', text: 'Grup berhasil dibuat!', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
       return true;
     } catch (error) {
@@ -203,32 +197,17 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   const joinGroup = async (joinCode: string): Promise<boolean> => {
     if (!user) return false;
     try {
-      // Fetch groups from API agar data grup selalu up-to-date dan bisa diakses semua user
-      const res = await fetch('/api/group/list');
+      const res = await fetch('/api/group/join', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ joinCode, userId: user.id })
+      });
       const data = await res.json();
-      const groupsFromApi = data.groups || [];
-      console.log('Groups from API:', groupsFromApi);
-      const inputCode = joinCode.trim().toUpperCase();
-      const foundGroup = groupsFromApi.find(
-        g => typeof g.join_code === 'string' && g.join_code.toUpperCase() === inputCode
-      );
-      console.log('Found group:', foundGroup);
-      if (!foundGroup) {
-        Swal.fire({icon: 'error', title: 'Gagal', text: 'Kode grup tidak valid', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
+      if (!data.ok || !data.group) {
+        Swal.fire({icon: 'error', title: 'Gagal', text: data.error || 'Gagal gabung grup', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
         return false;
       }
-      // Tambahkan user ke member jika belum ada
-      if (!foundGroup.members.some(m => m.userId === user.id)) {
-        foundGroup.members.push({
-          userId: user.id,
-          username: user.username || user.email?.split('@')[0] || 'User',
-          joinedAt: new Date().toISOString(),
-          role: 'student'
-        });
-      }
-      setGroups(groupsFromApi);
-      setUserGroups(prev => [...prev, foundGroup]);
-      setCurrentGroup(foundGroup);
+      await refreshGroups();
       Swal.fire({icon: 'success', title: 'Berhasil!', text: 'Berhasil bergabung dengan grup!', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
       return true;
     } catch (error) {

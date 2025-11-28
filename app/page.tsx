@@ -6,51 +6,112 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 export default function Dashboard() {
+    const [showSplash, setShowSplash] = useState(true);
     // ...existing code...
-  const [showSplash, setShowSplash] = useState(true);
-  const [fadeOut, setFadeOut] = useState(false);
-  const [particles, setParticles] = useState([]);
-  const [rocketLaunch, setRocketLaunch] = useState(false);
-  const [dashboardFade, setDashboardFade] = useState(false);
-  useEffect(() => {
-    // Generate particles only on client after mount
-    setParticles(Array.from({ length: 24 }, (_, i) => ({
-      key: i,
-      left: Math.random() * 100 + '%',
-      top: Math.random() * 100 + '%',
-      delay: Math.random() * 1.5,
-      size: Math.random() * 18 + 8,
-      color: `rgba(255,193,7,${Math.random() * 0.5 + 0.2})`,
-    })));
-  }, []);
-  useEffect(() => {
+    const [particles, setParticles] = useState([]);
+    const [rocketLaunch, setRocketLaunch] = useState(false);
+    const [dashboardFade, setDashboardFade] = useState(false);
+    // Cek status login (misal dari localStorage atau context)
+    // ...existing code...
+    // ...existing code...
+    useEffect(() => {
+      // Generate particles only on client after mount
+      setParticles(Array.from({ length: 32 }, (_, i) => ({
+        key: i,
+        left: Math.random() * 100 + '%',
+        top: Math.random() * 100 + '%',
+        delay: Math.random() * 1.5,
+        size: Math.random() * 24 + 8,
+        color: `rgba(255,193,7,${Math.random() * 0.7 + 0.3})`,
+        animate: {
+          y: [0, Math.random() * 40 - 20, Math.random() * 80 - 40, 0],
+          opacity: [0, 1, 0.7, 0.2, 0],
+        },
+      })));
+    }, []);
+    useEffect(() => {
+      if (showSplash) {
+        const timer2 = setTimeout(() => setShowSplash(false), 2200);
+        return () => {
+          clearTimeout(timer2);
+        };
+      }
+    }, [showSplash]);
+    const text = 'Selamat Datang di PastiJago';
+    const words = text.split(' ');
+    // Sisi animasi: kiri, kanan, atas, bawah, diagonal
+    // ...existing code...
     if (showSplash) {
-      const timer = setTimeout(() => setFadeOut(true), 1800);
-      const timer2 = setTimeout(() => setShowSplash(false), 2200);
-      return () => {
-        clearTimeout(timer);
-        clearTimeout(timer2);
-      };
+      return (
+        <div className="min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden">
+          {/* Particle background with animated motion */}
+          <div className="position-absolute top-0 start-0 w-100 h-100 overflow-hidden" style={{ zIndex: 1 }}>
+            {particles.map(p => (
+              <motion.div
+                key={p.key}
+                className="particle"
+                style={{
+                  position: 'absolute',
+                  left: p.left,
+                  top: p.top,
+                  width: p.size,
+                  height: p.size,
+                  borderRadius: '50%',
+                  backgroundColor: p.color,
+                }}
+                initial={{ opacity: 0, y: 0 }}
+                animate={p.animate}
+                transition={{ duration: 2.2, delay: p.delay, repeat: Infinity, repeatType: 'reverse' }}
+              />
+            ))}
+          </div>
+          <div className="container text-center position-relative" style={{ zIndex: 2 }}>
+            <motion.h1
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, type: 'spring' }}
+              className="display-2 fw-bold mb-4 gradient-text"
+            >
+              {words.map((word, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ y: 40, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.7, delay: i * 0.13, type: 'spring' }}
+                  style={{ display: 'inline-block', marginRight: 8 }}
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </motion.h1>
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: words.length * 0.13 + 0.3, type: 'spring' }}
+            >
+              <p className="lead fs-4 text-light mt-4">
+                Bergabunglah dengan kami dan tingkatkan keterampilan programming Anda ke level yang lebih tinggi!
+              </p>
+            </motion.div>
+          </div>
+          <style jsx>{`
+            .particle {
+              position: absolute;
+              border-radius: 50%;
+              will-change: transform, opacity;
+            }
+          `}</style>
+        </div>
+      );
     }
-  }, [showSplash]);
-  const text = 'Selamat Datang di PastiJago';
-  const words = text.split(' ');
-  // Sisi animasi: kiri, kanan, atas, bawah, diagonal
-  const sides = [
-    { x: '-100vw', y: 0 }, // kiri
-    { x: '100vw', y: 0 },  // kanan
-    { x: 0, y: '-100vh' }, // atas
-    { x: 0, y: '100vh' },  // bawah
-    { x: '-100vw', y: '-100vh' }, // kiri atas
-    { x: '100vw', y: '100vh' },   // kanan bawah
-    { x: '-100vw', y: '100vh' },  // kiri bawah
-    { x: '100vw', y: '-100vh' },  // kanan atas
-  ];
-  if (showSplash) {
-    // ...existing splash code...
-  }
+    // ...existing code...
     return (
-      <div className={`min-vh-100 text-light position-relative overflow-hidden${dashboardFade ? ' dashboard-fade-out' : ''}`}>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.2, type: 'spring' }}
+        className={`min-vh-100 text-light position-relative overflow-hidden${dashboardFade ? ' dashboard-fade-out' : ''}`}
+      >
         <div className="container py-5 position-relative" style={{zIndex: 2}}>
           <div className="row align-items-center min-vh-100 py-5">
             <div className="col-lg-6 mb-5 mb-lg-0">
@@ -80,6 +141,9 @@ export default function Dashboard() {
                       }, 1400);
                     }}
                     disabled={rocketLaunch}
+                    initial={{ scale: 1, boxShadow: '0 0 0px #ffd700' }}
+                    animate={rocketLaunch ? { scale: [1, 1.08, 0.95, 1.2, 0.7], boxShadow: ['0 0 0px #ffd700', '0 0 32px #ffd700', '0 0 0px #ffd700'] } : { scale: 1, boxShadow: '0 0 0px #ffd700' }}
+                    transition={rocketLaunch ? { duration: 1.2, ease: 'easeInOut' } : {}}
                   >
                     <span style={{ position: 'relative', display: 'inline-block', width: 32, height: 32, marginRight: 12 }}>
                       <motion.span
@@ -231,6 +295,6 @@ export default function Dashboard() {
             transition: opacity 0.7s cubic-bezier(0.4,0.8,0.6,1);
           }
         `}</style>
-      </div>
+      </motion.div>
     );
 }

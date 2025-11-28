@@ -90,7 +90,7 @@ export default function GroupsPage() {
                     <p className="text-muted mb-2">{group.description}</p>
                     <div className="mb-2">
                       <span className="badge bg-warning text-dark me-2">{group.members.length} anggota</span>
-                      <span className="badge bg-dark text-light">Kode: {group.joinCode}</span>
+                      <span className="badge bg-dark text-light">Kode: {group.joinCode || group.join_code}</span>
                     </div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-3">
